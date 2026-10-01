@@ -1,0 +1,30 @@
+[package]
+name = "zixcel-github"
+version = "0.1.1"
+edition = "2024"
+rust-version = "1.97"
+description = "Policy-neutral GitHub API wrapper boundary for Zixcel"
+license = "Apache-2.0"
+readme = "README.md"
+publish = ["zixcel-private"]
+
+[package.metadata.zixcel]
+boundary = "github-api-wrapper"
+external-actions = true
+
+[workspace]
+members = ["."]
+resolver = "3"
+
+[dependencies]
+base64 = "0.22.1"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+sha2 = "0.10.9"
+toml = "0.8.23"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"

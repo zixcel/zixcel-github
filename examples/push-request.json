@@ -1,0 +1,14 @@
+{
+  "schema": "zixcel://github/api-request/v1",
+  "request_id": "github-request-1",
+  "operation_id": "github-operation-1",
+  "connection_ref": "github-connection-1",
+  "owner": "example-org",
+  "repository": "example-api",
+  "action": {
+    "type": "push-repository-snapshot",
+    "snapshot_ref": "artifact/source-snapshot-1",
+    "snapshot_digest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "expected_remote": {"state": "absent"}
+  }
+}

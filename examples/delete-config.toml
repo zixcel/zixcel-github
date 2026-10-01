@@ -1,0 +1,6 @@
+schema = "zixcel://github/connector-config/v1"
+config_id = "ecosystem-catalog"
+connection_ref = "connection:github:owner"
+organization = "example-org"
+repositories = ["example-api", "example-web"]
+allowed_actions = ["delete-repository"]

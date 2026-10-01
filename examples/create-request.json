@@ -1,0 +1,12 @@
+{
+  "schema": "zixcel://github/api-request/v1",
+  "request_id": "create-local-preparation",
+  "operation_id": "create-local-preparation",
+  "connection_ref": "connection:github:owner",
+  "owner": "example-org",
+  "repository": "example-api",
+  "action": {
+    "type": "create-private-repository",
+    "default_branch": "main"
+  }
+}

@@ -12,7 +12,7 @@ cargo run --offline -- check-request examples/push-request.json
 
 Only opaque `connection_ref` values are accepted, never credentials. OAuth, secret resolution and HTTP/Git transport belong to Crowsi/Zixcel worker boundaries. `execute_api_request` passes validated closed requests to an injected `GitHubBackend`; higher adapters authorize the caller. No path dependencies on other local repositories are used.
 
-`parse_config` validates closed TOML up to 1 MiB; `build_plan` is independent of repository ordering. No HTTP or secret resolver is linked; execution is restricted to an injected backend trait. Cargo publication remains restricted to `zixcel-private`; these changes have not been published to that registry.
+`parse_config` validates closed TOML up to 1 MiB; `build_plan` is independent of repository ordering. No HTTP or secret resolver is linked; execution is restricted to an injected backend trait. The source manifest now targets crates.io. The public publication workflow is prepared locally and remains disabled pending name ownership, trusted-publisher setup, and exact package review. Existing private-registry artifacts have not been replaced or activated.
 
 ## Responsibilities
 
@@ -66,3 +66,7 @@ Apache-2.0; see LICENSE and NOTICE. Previously granted permissions and third-par
 The package is an independently consumable unit. Callers reference its documented
 interface through a versioned dependency and own application-specific composition
 and integration.
+
+## Package publication templates
+
+`templates/package-publication/` contains standalone npm and crates.io GitHub Actions templates, a public-package and archive gate, and activation policy. They are copied into each consuming repository and do not add a runtime dependency on this crate. Publishing is disabled until the registry identity, protected environment, reviewed source SHA, and package delivery prerequisites are configured. See the template policy and installation instructions in that directory.

@@ -1,0 +1,24 @@
+{
+  "schema": "zixcel://github/package-publication-template/v1",
+  "status": "prepared-locally-not-activated",
+  "public_registries": {
+    "npm": "https://registry.npmjs.org",
+    "cargo": "https://crates.io"
+  },
+  "publication_trigger": "workflow_dispatch on reviewed vVERSION tag",
+  "default_enabled": false,
+  "required_variables": [
+    "REGISTRY_PUBLISH_ENABLED",
+    "REGISTRY_SECURITY_APPROVED_SHA"
+  ],
+  "required_environments": [
+    "npm-public",
+    "crates-io-public"
+  ],
+  "identity": "exact GitHub owner, repository, workflow filename, environment configured by the registry owner",
+  "local_dependencies": "No file/link/workspace archives, outside paths, source replacement, or alternate registries in public release dependencies. Resolve and publish foundations first.",
+  "private_packages": "Never sent to npm public or crates.io by these templates.",
+  "bootstrap": "Name ownership and initial package registration must be established independently; do not create placeholder releases.",
+  "npm_allowed_actions": "Enable npm publish explicitly in the trusted publisher configuration; current stage-only default cannot run this direct-publish template.",
+  "source_security": "Complete repository and exact package archive security/licensing review before approving the source SHA. Basic archive guard is not a complete secret or confidential-data scanner."
+}

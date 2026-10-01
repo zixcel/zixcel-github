@@ -1,0 +1,64 @@
+name: Publish npm package
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: package-publication-${{ github.repository }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: vars.REGISTRY_PUBLISH_ENABLED == 'true' && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: npm-public
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Require the reviewed source revision
+        env:
+          APPROVED_SHA: ${{ vars.REGISTRY_SECURITY_APPROVED_SHA }}
+        run: |
+          test "$APPROVED_SHA" = "$GITHUB_SHA"
+          git merge-base --is-ancestor HEAD origin/main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.15.0'
+      - name: Install the reviewed package manager
+        run: |
+          npm install --global npm@11.5.1
+          MANAGER=$(node -e 'const p=require("./package.json"); const m=p.packageManager || "npm@11.5.1"; if(!/^(?:pnpm@10\.\d+\.\d+|npm@11\.5\.1)$/.test(m)) throw Error("Pinned pnpm 10 or npm 11.5.1 required"); process.stdout.write(m)')
+          npm install --global "$MANAGER"
+          echo "PACKAGE_MANAGER=${MANAGER%%@*}" >> "$GITHUB_ENV"
+      - name: Check registry metadata and release tag
+        env:
+          RELEASE_TAG_PREFIX: ${{ vars.REGISTRY_NPM_TAG_PREFIX || 'v' }}
+        run: |
+          python3 scripts/check-public-package.py npm
+          VERSION=$(node -p 'require("./package.json").version')
+          test "$GITHUB_REF_TYPE" = tag
+          test "$GITHUB_REF_NAME" = "${RELEASE_TAG_PREFIX}${VERSION}"
+      - name: Build, test, and pack the frozen source
+        run: |
+          if test "$PACKAGE_MANAGER" = pnpm; then
+            test -f pnpm-lock.yaml
+            pnpm install --frozen-lockfile
+          else
+            test -f package-lock.json
+            npm ci
+          fi
+          "$PACKAGE_MANAGER" test
+          "$PACKAGE_MANAGER" run --if-present build
+          mkdir -p "$RUNNER_TEMP/package-release"
+          npm pack --json --pack-destination "$RUNNER_TEMP/package-release" > "$RUNNER_TEMP/package-pack.json"
+          ARCHIVE=$(node -e 'const p=require(process.env.RUNNER_TEMP+"/package-pack.json");if(p.length!==1)throw Error("One archive required");process.stdout.write(p[0].filename)')
+          python3 scripts/check-public-package.py npm --archive "$RUNNER_TEMP/package-release/$ARCHIVE"
+      - name: Publish the inspected archive through OIDC
+        run: |
+          ARCHIVE=$(node -e 'const p=require(process.env.RUNNER_TEMP+"/package-pack.json");process.stdout.write(p[0].filename)')
+          npm publish "$RUNNER_TEMP/package-release/$ARCHIVE" --registry=https://registry.npmjs.org --access public --provenance --ignore-scripts

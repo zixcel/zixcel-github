@@ -1,0 +1,11 @@
+{
+  "schema": "zixcel://github/package-publication-installation/v1",
+  "registry": "https://crates.io",
+  "workflow": "publish-cargo.yml",
+  "environment": "crates-io-public",
+  "template_repository": "zixcel/zixcel-github",
+  "installed_locally": true,
+  "trusted_publisher_configured": false,
+  "activation_status": "disabled-until-registry-identity-and-reviewed-SHA-configured",
+  "network_published": false
+}

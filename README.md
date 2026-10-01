@@ -60,3 +60,9 @@ Validation used local fixtures. Live Crowsi enrollment, authority adoption and c
 ## License
 
 Apache-2.0; see LICENSE and NOTICE. Previously granted permissions and third-party terms remain effective. Private registration, credentials and runtime state are excluded. Generated `.tgz` archives are excluded from source and distribution.
+
+## Package integration
+
+The package is an independently consumable unit. Callers reference its documented
+interface through a versioned dependency and own application-specific composition
+and integration.

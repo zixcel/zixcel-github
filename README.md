@@ -11,11 +11,11 @@ Build and validate typed GitHub requests for repository observation and explicit
 
 A caller supplies the authenticated transport and allowed operation configuration. Creation and deletion require explicit permission for the exact target.
 
-Package distribution is not activated by this documentation. Use the checked-in source and the declared dependency versions; published availability must be verified separately.
+This is the reviewed first-publication candidate for `zixcel-github` 0.1.1. Published availability must be verified separately; this documentation does not claim the release is complete.
 
 ## Getting started
 
-Install Rust 1.97 or newer and make the declared dependencies available. Use the configured private registry when a dependency is not distributed publicly. Run from this repository:
+Install Rust 1.97 or newer and make the declared dependencies available. The reviewed crate uses crates.io dependencies. Run from this repository:
 
 ```sh
 cargo test --locked

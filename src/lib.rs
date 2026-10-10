@@ -1,3 +1,4 @@
+#![doc = include_str!("../README.crate.md")]
 #![forbid(unsafe_code)]
 #![doc = "Policy-neutral typed GitHub API wrapper boundary."]
 

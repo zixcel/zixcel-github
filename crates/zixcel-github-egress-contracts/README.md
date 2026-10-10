@@ -12,7 +12,7 @@ This library never stores credentials or calls the GitHub API.
 
 The contracts describe allowed communication; the caller must supply authorization and enforcement.
 
-Package distribution is not activated by this documentation. Use the owning product workspace and declared dependency versions. Registry availability is a separate release gate.
+This reusable library is packaged independently for crates.io. Add `zixcel-github-egress-contracts = "0.10.0"` to a Rust 1.97 application. Its dependencies use the public registry; a sibling checkout or private registry is not required.
 
 ## Getting started
 

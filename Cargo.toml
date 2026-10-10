@@ -15,7 +15,7 @@ boundary = "github-api-wrapper"
 external-actions = true
 
 [workspace]
-members = ["."]
+members = [".", "crates/*"]
 resolver = "3"
 
 [dependencies]

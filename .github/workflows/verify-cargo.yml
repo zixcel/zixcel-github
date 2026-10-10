@@ -1,7 +1,7 @@
 name: Verify Cargo distribution
 on:
   push:
-    branches: [release/crates-io-zixcel-github-0.1.1-readme]
+    branches: [main, release/crates-io-zixcel-github-0.1.1-readme]
   workflow_dispatch:
 permissions:
   contents: read

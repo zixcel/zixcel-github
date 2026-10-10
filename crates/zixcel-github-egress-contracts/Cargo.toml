@@ -1,0 +1,33 @@
+[package]
+exclude = ["/registration/**", "/state/**", "/.local/**", "/.state/**", "/.data/**", "/secrets/**", "/credentials/**", "/.env", "/.env.production", "/.env.local", "/*.tgz", "/*.tar.gz", "/*.tar", "/*.zip", "/*.whl", "/*.crate", "/.ruff_cache/**", "/.mypy_cache/**", "/.tox/**", "/.nox/**", "/.hypothesis/**", "/.coverage", "/.coverage.*", "/htmlcov/**", "/lcov.info", "/junit.xml", "/*.profraw", "/*.profdata", "/*.egg-info/**", "/target/**", "/node_modules/**", "/dist/**", "/build/**", "/.cache/**", "/.pytest_cache/**", "/coverage/**"]
+name = "zixcel-github-egress-contracts"
+version = "0.10.0"
+edition = "2024"
+rust-version = "1.97"
+license = "Apache-2.0"
+readme = "README.md"
+description = "Bounded GitHub egress contracts and authorization validation"
+publish = ["crates-io"]
+repository = "https://github.com/zixcel/zixcel-github"
+
+[package.metadata.crowsi]
+boundary = "external-provider-egress"
+credential_values_in_wire = false
+
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha2 = "0.10.9"
+url = "2.5.8"
+zeroize = "1.8.2"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "deny"
+pedantic = "deny"
+dbg_macro = "deny"
+todo = "deny"
+unwrap_used = "deny"

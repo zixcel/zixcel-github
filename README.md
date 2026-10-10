@@ -47,3 +47,20 @@ cargo clippy --locked --all-targets --all-features -- -D warnings
 [API documentation](https://docs.rs/zixcel-github) · [Source](https://github.com/zixcel/zixcel-github) · [Usage guide](https://github.com/zixcel/zixcel-github/blob/main/docs/getting-started.md)
 
 Apache-2.0. Retain the package LICENSE and NOTICE; see the source repository for security reporting and contribution guidelines.
+
+
+## GitHub integration workspace
+
+This repository owns the GitHub API wrapper, provider-specific egress contracts
+and credential-bound GitHub execution adapter under `crates/`.
+The generic HTTP transport does not decide which GitHub operations are allowed.
+
+```sh
+cargo test --locked --workspace --all-targets
+cargo test --locked -p zixcel-github-transport --test contracts
+```
+
+These cases validate request binding, provider contracts and replay boundaries
+using fixtures. Live reads and repository mutations require an explicit caller
+authorization and deployment-owned credential configuration. OpenAI authorization
+egress belongs to `zixcel-openai-auth`, not this GitHub workspace.

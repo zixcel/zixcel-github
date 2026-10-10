@@ -84,9 +84,9 @@ dependencies = [
 
 [[package]]
 name = "crowsi-credential-broker"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f80d269abdbf5c2d6e099a996e424bf84ca318db02b4282200ee3fdb4f33d429"
+checksum = "fb7593a9e3f691c3b99f497bcdbd8883c5ab4dbcb277873b598a35cb001602bc"
 dependencies = [
  "crowsi-control-contracts",
  "crowsi-windows-custody-provider",
@@ -102,9 +102,9 @@ dependencies = [
 
 [[package]]
 name = "crowsi-windows-custody-provider"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7afab34418f95be8928fe04ccb1109dd135a69325069099ca57c67c2a0ae6140"
+checksum = "1edf3d5374c8251c76e6fa04f47b962e965e278d5d0c85f7832ac4d0eca43644"
 dependencies = [
  "base64",
  "crowsi-windows-operation-contracts",

@@ -1,30 +1,49 @@
 # zixcel-github
 
-Build and validate typed GitHub requests for repository observation and explicitly enabled operations.
+Typed GitHub API request planning, validation and receipt parsing with an injected execution backend. Use this library to keep repository observation and explicitly allowed changes behind a reviewable provider boundary.
 
-## What you can do
+## Install
 
-- Describe reads and supported repository changes.
-- Validate request scope and parse provider results.
-
-## Current scope
-
-A caller supplies the authenticated transport and allowed operation configuration. Creation and deletion require explicit permission for the exact target.
-
-Package distribution is not activated by this documentation. Use the checked-in source and the declared dependency versions; published availability must be verified separately.
-
-## Getting started
-
-Install Rust 1.97 or newer and make the declared dependencies available. Use the configured private registry when a dependency is not distributed publicly. Run from this repository:
-
-```sh
-cargo test --locked
+```toml
+[dependencies]
+zixcel-github = "0.1.1"
 ```
 
-## Documentation and source
+This dependency uses crates.io; no private registry is required.
 
-[Interface reference](docs/interface-reference.md)
+## Capabilities
 
-[Usage guide](docs/getting-started.md)
+- Parse connector configuration and build capability-aware plans.
+- Validate supported API requests and target expectations.
+- Parse snapshot, text and workflow-input artifacts into typed results.
 
-[Examples](examples) · [Implementation and public interfaces](src) · [Verification cases](tests) · [Contributing](CONTRIBUTING.md) · [Security reporting](SECURITY.md) · [License](LICENSE) · [Attribution notices](NOTICE)
+## Example
+
+```rust
+use zixcel_github::{CONNECTOR, PROVIDER};
+
+assert_eq!(CONNECTOR, "zixcel-github");
+assert_eq!(PROVIDER, "github");
+```
+
+## Features and requirements
+
+Requires Rust 1.97 or newer. The crate is a reusable library, not a command-line application.
+
+## Boundaries
+
+The caller supplies authentication and the transport backend. Creation, deletion and other changes require explicit target permissions. This crate does not store tokens or choose application policy.
+
+## Development
+
+```sh
+cargo fmt --all -- --check
+cargo test --locked --all-features
+cargo clippy --locked --all-targets --all-features -- -D warnings
+```
+
+## Documentation and license
+
+[API documentation](https://docs.rs/zixcel-github) · [Source](https://github.com/zixcel/zixcel-github) · [Usage guide](https://github.com/zixcel/zixcel-github/blob/main/docs/getting-started.md)
+
+Apache-2.0. Retain the package LICENSE and NOTICE; see the source repository for security reporting and contribution guidelines.

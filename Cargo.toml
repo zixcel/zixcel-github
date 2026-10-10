@@ -6,7 +6,7 @@ edition = "2024"
 rust-version = "1.97"
 description = "Policy-neutral GitHub API wrapper boundary for Zixcel"
 license = "Apache-2.0"
-readme = "README.md"
+readme = "README.crate.md"
 publish = ["crates-io"]
 repository = "https://github.com/zixcel/zixcel-github"
 

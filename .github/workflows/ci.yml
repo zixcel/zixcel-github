@@ -30,6 +30,8 @@ jobs:
           cargo +1.97 test --locked --workspace --all-targets --all-features
           cargo +1.97 test --locked --workspace --doc --all-features
           cargo +1.97 build --locked --workspace --bins
+      - name: Verify bounded unknown-length curl transfers
+        run: python3 .github/scripts/curl-response-limit.py
       - name: Audit exact dependency lock
         run: |
           cargo install cargo-audit --version 0.22.2 --locked --no-default-features --root "$RUNNER_TEMP/audit"

@@ -213,6 +213,6 @@ mod size_tests {
     fn bounds_body_and_header_reads_before_allocation() {
         assert!(bounded(std::io::repeat(0), 65_539).is_err());
         assert!(bounded(std::io::repeat(0), 2 * 1024 * 1024).is_err());
-        assert_eq!(bounded(&b"200"[..], 3).unwrap(), b"200");
+        assert_eq!(bounded(&b"200"[..], 3).expect("bounded status"), b"200");
     }
 }

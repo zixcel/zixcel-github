@@ -24,3 +24,5 @@ A passing source-level check establishes only what that check observes. Keep mis
 ## Continue reading
 
 [Repository overview](../README.md)
+
+The native GitHub transport requires curl 8.4 or newer to enforce `--max-filesize` during transfers of unknown length. Bodies are limited to 2 MiB during transfer and reads; response headers use a pipe with a 64 KiB limit. Oversized headers terminate and reap the child. Temporary exchange files are removed on failure.

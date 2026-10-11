@@ -13,6 +13,10 @@ fn field<'a>(config: &'a str, key: &str) -> &'a str {
 }
 
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("--version") {
+        println!("curl 8.4.0 fixture");
+        return;
+    }
     let mut config = String::new();
     std::io::stdin().read_to_string(&mut config).expect("fixture input");
     let method = field(&config, "request");
@@ -30,7 +34,6 @@ fn main() {
     };
     let (status, response) = response::reply(method, url, &body);
     fs::write(field(&config, "output"), response).expect("fixture response");
-    fs::write(field(&config, "dump-header"), "X-GitHub-Request-Id: fixture-request\n")
-        .expect("fixture headers");
+    print!("X-GitHub-Request-Id: fixture-request\n");
     print!("{status}");
 }

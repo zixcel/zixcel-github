@@ -48,6 +48,7 @@ impl ExecutionLedger {
     ///
     /// Rejects replay substitution, an ambiguous prior attempt, or persistence failure.
     pub fn begin(&self, id: &str, digest: &str) -> Result<ExecutionStart, TransportError> {
+        let _lock = crate::ledger_io::lock(&self.path)?;
         let mut document = load(&self.path)?;
         match document.records.get(id) {
             Some(Record::Completed {
@@ -88,6 +89,7 @@ impl ExecutionLedger {
         digest: &str,
         receipt: GitHubEgressReceiptV1,
     ) -> Result<(), TransportError> {
+        let _lock = crate::ledger_io::lock(&self.path)?;
         let mut document = load(&self.path)?;
         match document.records.get(id) {
             Some(Record::Prepared {

@@ -32,3 +32,19 @@ cargo test --locked -p zixcel-github-transport
 ## Product responsibility
 
 This component is maintained in [zixcel/zixcel-github](https://github.com/zixcel/zixcel-github). Use the [product README](../../README.md) for composition, use cases and trust boundaries.
+
+## Ledger concurrency and recovery
+
+Every reservation and completion locks the same persistent `<state_path>.lock`
+sidecar while reading and atomically replacing the ledger. Keep both files in
+an operator-controlled directory; do not delete or replace the sidecar while
+processes use the ledger. OS locks are released when a process exits.
+
+A prepared reservation left by a crash remains `provider-outcome-unknown`:
+releasing the lock never authorizes another provider execution. Completed
+receipts retain exact replay behavior. These guarantees require cooperating
+processes to use the same state path and a filesystem supporting OS file locks.
+
+`cargo test --locked -p zixcel-github-transport --test ledger` exercises concurrent
+independent processes, preservation of distinct reservations/completions, and
+recovery after killing a lock holder. It does not call GitHub.

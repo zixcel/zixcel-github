@@ -128,7 +128,7 @@ fn require_bounded_curl(curl: &str) -> Result<(), TransportError> {
                 parts.next()?.parse::<u32>().ok()?,
             ))
         });
-    if !status.success() || !version.is_some_and(|v| v >= (8, 4)) {
+    if !status.success() || version.is_none_or(|v| v < (8, 4)) {
         return Err(TransportError("provider-unavailable"));
     }
     Ok(())

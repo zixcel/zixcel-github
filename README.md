@@ -64,3 +64,5 @@ These cases validate request binding, provider contracts and replay boundaries
 using fixtures. Live reads and repository mutations require an explicit caller
 authorization and deployment-owned credential configuration. OpenAI authorization
 egress belongs to `zixcel-openai-auth`, not this GitHub workspace.
+
+[OSS responsibility and source completion](docs/oss-source-contract.md) defines the supported package boundary and required acceptance. It does not declare unexecuted source, distribution or production checks complete.

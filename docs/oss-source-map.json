@@ -1,0 +1,368 @@
+{
+  "repository": "zixcel/zixcel-github",
+  "purpose": "Build and validate typed GitHub requests for repository observation and explicitly enabled operations.",
+  "responsibility_boundary": "Own the named reusable integration/data mechanism. Product roles/UI and operational approvals stay with consumers; transport/custody reuse managed Crowsi components where capabilities fit. Planning-only APIs must remain clearly distinguished from implemented external operations.",
+  "packages": [
+    {
+      "manifest": "Cargo.toml",
+      "package": "zixcel-github",
+      "ecosystem": "rust",
+      "description": "Policy-neutral GitHub API wrapper boundary for Zixcel",
+      "interfaces": {
+        "lib": "src/lib.rs",
+        "features": {},
+        "bins": [],
+        "public_modules": [],
+        "public_reexports": [
+          "action::{GitHubAction, GitHubRemoteExpectation, PermissionRequirement}",
+          "artifacts::{\n    GitHubSnapshotArtifact, GitHubSnapshotFile, GitHubTextArtifact, GitHubWorkflowInputsArtifact,\n    parse_snapshot_artifact, parse_text_artifact, parse_workflow_inputs_artifact,\n}",
+          "boundary::ConnectorError",
+          "config::{ConnectorConfig, parse_config}",
+          "execution::{\n    execute_api_request, execute_configured_request, parse_api_request_json, validate_api_request,\n}",
+          "execution_model::{\n    GitHubApiReceipt, GitHubApiRequest, GitHubBackend, GitHubBackendReceipt,\n    RequestValidationReport,\n}",
+          "plan::{ConnectorPlan, PlanStep, build_plan}",
+          "reports::{\n    CapabilityReport, DoctorReport, ValidationReport, capabilities, doctor, validation_report,\n}"
+        ],
+        "implicit_bins": []
+      },
+      "declared_commands": {}
+    },
+    {
+      "manifest": "crates/zixcel-github-egress-contracts/Cargo.toml",
+      "package": "zixcel-github-egress-contracts",
+      "ecosystem": "rust",
+      "description": "Bounded GitHub egress contracts and authorization validation",
+      "interfaces": {
+        "lib": "crates/zixcel-github-egress-contracts/src/lib.rs",
+        "features": {},
+        "bins": [],
+        "public_modules": [],
+        "public_reexports": [
+          "github::{\n    GitHubAuthorizationV1, GitHubEgressCommandV1, GitHubEgressMode, GitHubEgressReceiptV1,\n    GitHubVerificationReceiptV1, authorization_digest, github_connection_ref_digest,\n    github_document_digest, validate_github_command, validate_github_egress_receipt,\n    validate_github_verification_receipt,\n}"
+        ],
+        "implicit_bins": []
+      },
+      "declared_commands": {}
+    },
+    {
+      "manifest": "crates/zixcel-github-transport/Cargo.toml",
+      "package": "zixcel-github-transport",
+      "ecosystem": "rust",
+      "description": null,
+      "interfaces": {
+        "lib": "crates/zixcel-github-transport/src/lib.rs",
+        "features": {},
+        "bins": [
+          {
+            "name": "zixcel-github-transport",
+            "path": "src/main.rs"
+          }
+        ],
+        "public_modules": [],
+        "public_reexports": [
+          "config::{GitHubTransportConfigV1, GitHubTransportTrustV1}",
+          "execute::{GitHubProvider, execute_command}",
+          "github_provider::PlatformGitHubProvider",
+          "ledger::{ExecutionLedger, ExecutionStart}",
+          "model::TransportError"
+        ],
+        "implicit_bins": []
+      },
+      "declared_commands": {}
+    }
+  ],
+  "schema_definitions": [],
+  "test_sources": [
+    "crates/zixcel-github-egress-contracts/src/github/command.rs",
+    "crates/zixcel-github-egress-contracts/src/github/primitives.rs",
+    "crates/zixcel-github-egress-contracts/src/github_tests.rs",
+    "crates/zixcel-github-transport/src/artifact_store.rs",
+    "crates/zixcel-github-transport/src/artifact_store_tests.rs",
+    "crates/zixcel-github-transport/src/config.rs",
+    "crates/zixcel-github-transport/src/github_provider_action_write.rs",
+    "crates/zixcel-github-transport/src/github_provider_http.rs",
+    "crates/zixcel-github-transport/src/main.rs",
+    "crates/zixcel-github-transport/src/provider_tests.rs",
+    "crates/zixcel-github-transport/tests/contracts.rs",
+    "crates/zixcel-github-transport/tests/fixtures/github_fixture.rs",
+    "crates/zixcel-github-transport/tests/fixtures/response.rs",
+    "crates/zixcel-github-transport/tests/ledger.rs",
+    "scripts/check-public-package.py",
+    "src/action_validation.rs",
+    "src/artifacts.rs",
+    "src/boundary.rs",
+    "src/unit_tests.rs",
+    "templates/package-publication/check-public-package.py",
+    "tests/api_boundary.rs",
+    "tests/api_execution.rs",
+    "tests/artifacts.rs",
+    "tests/configured_policy.rs",
+    "tests/connector.rs",
+    "tests/permission_matrix.rs",
+    "tests/support/mod.rs"
+  ],
+  "example_sources": [
+    "crates/zixcel-github-transport/examples/connector-policy.json",
+    "examples/config.toml",
+    "examples/create-request.json",
+    "examples/delete-config.toml",
+    "examples/push-request.json",
+    "examples/write-config.toml"
+  ],
+  "workflow_definitions": [
+    {
+      "path": ".github/workflows/cargo-package.yml",
+      "jobs": [
+        {
+          "job": "cargo-package",
+          "condition": null,
+          "runs_on": "ubuntu-24.04",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+              "condition": null
+            },
+            {
+              "name": "Isolate public registry configuration and build output",
+              "run": "echo \"CARGO_HOME=$RUNNER_TEMP/public-cargo-home\" >> \"$GITHUB_ENV\"\necho \"CARGO_TARGET_DIR=$RUNNER_TEMP/public-cargo-target\" >> \"$GITHUB_ENV\"\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Install the declared Rust toolchain",
+              "run": "rustup toolchain install 1.97 --profile minimal --component rustfmt --component clippy",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Check formatting and all-feature lints",
+              "run": "cargo +1.97 fmt --all -- --check\ncargo +1.97 clippy --locked --all-targets --all-features -- -D warnings\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Exercise behavioral and documentation tests",
+              "run": "cargo +1.97 test --locked --all-features",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Generate and build the independent public package",
+              "run": "cargo +1.97 package --locked --registry crates-io",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Record exact source and package bytes",
+              "run": "mkdir -p \"$GITHUB_WORKSPACE/outgoing\"\ncp \"$CARGO_TARGET_DIR/package/zixcel-github-egress-contracts-0.10.0.crate\" \"$GITHUB_WORKSPACE/outgoing/\"\nprintf '%s\\n' \"$EXPECTED_SHA\" > \"$GITHUB_WORKSPACE/outgoing/source-sha.txt\"\ncd \"$GITHUB_WORKSPACE/outgoing\"\nsha256sum zixcel-github-egress-contracts-0.10.0.crate > SHA256SUMS\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "jobs": [
+        {
+          "job": "test",
+          "condition": null,
+          "runs_on": "ubuntu-24.04",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+              "condition": null
+            },
+            {
+              "name": "Install declared Rust toolchain",
+              "run": "rustup toolchain install 1.97 --profile minimal --component rustfmt --component clippy",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Check every maintained package",
+              "run": "cargo +1.97 fmt --all -- --check\ncargo +1.97 clippy --locked --workspace --all-targets --all-features -- -D warnings\ncargo +1.97 test --locked --workspace --all-targets --all-features\ncargo +1.97 test --locked --workspace --doc --all-features\ncargo +1.97 build --locked --workspace --bins\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Verify bounded unknown-length curl transfers",
+              "run": "python3 .github/scripts/curl-response-limit.py",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Audit exact dependency lock",
+              "run": "cargo install cargo-audit --version 0.22.2 --locked --no-default-features --root \"$RUNNER_TEMP/audit\"\n\"$RUNNER_TEMP/audit/bin/cargo-audit\" audit --deny warnings\n",
+              "uses": null,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/oss-policy.yml",
+      "jobs": [
+        {
+          "job": "repository-policy",
+          "condition": null,
+          "runs_on": "ubuntu-latest",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+              "condition": null
+            },
+            {
+              "name": "Verify repository policy",
+              "run": "python3 .github/oss-policy-check.py",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Verify policy regression tests",
+              "run": "cd .github && python3 -m unittest discover -s policy-tests",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Check policy types",
+              "run": "python3 -m venv \"$RUNNER_TEMP/policy-types\"\n\"$RUNNER_TEMP/policy-types/bin/pip\" install -r .github/policy/requirements.txt\n\"$RUNNER_TEMP/policy-types/bin/mypy\" --strict .github/policy .github/oss-policy-check.py .github/policy-tests\n",
+              "uses": null,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/publish-cargo.yml",
+      "jobs": [
+        {
+          "job": "verify",
+          "condition": "vars.REGISTRY_VALIDATION_ENABLED == 'true' && github.event.repository.private == false",
+          "runs_on": "ubuntu-latest",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+              "condition": null
+            },
+            {
+              "name": "Require the reviewed source",
+              "run": "test \"$APPROVED_SHA\" = \"$GITHUB_SHA\"\nif [ \"$REGISTRY_OPERATION\" = publish ]; then\n  git merge-base --is-ancestor HEAD origin/main\nelse\n  git merge-base --is-ancestor origin/main HEAD\nfi\nrustup toolchain install 1.97 --profile minimal --component rustfmt --component clippy\nrustup override set 1.97\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Validate public package metadata",
+              "run": "cargo metadata --locked --no-deps --format-version 1 > /tmp/package-metadata.json\nnode --input-type=module <<'JS'\nimport fs from 'node:fs';\nconst d = JSON.parse(fs.readFileSync('/tmp/package-metadata.json'));\nconst p = d.packages.find(p => p.manifest_path === `${process.env.GITHUB_WORKSPACE}/Cargo.toml`);\nif (!p || JSON.stringify(p.publish) !== '[\"crates-io\"]'\n  || p.repository !== `https://github.com/${process.env.GITHUB_REPOSITORY}`) {\n  throw new Error('Public package metadata is not the reviewed crate');\n}\nfs.appendFileSync(process.env.GITHUB_ENV, `PACKAGE_ARCHIVE=target/package/${p.name}-${p.version}.crate\\n`);\nfs.appendFileSync(process.env.GITHUB_OUTPUT, `version=${p.version}\\n`);\nJS\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Verify independent package build",
+              "run": "cargo fmt --all -- --check\ncargo test --locked --all-features\ncargo clippy --locked --all-targets --all-features -- -D warnings\ncargo package --locked --registry crates-io\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Record the review artifact digest",
+              "run": "sha256sum \"$PACKAGE_ARCHIVE\"\necho \"sha256=$(sha256sum \"$PACKAGE_ARCHIVE\" | cut -d ' ' -f 1)\" >> \"$GITHUB_OUTPUT\"\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+              "condition": null
+            }
+          ]
+        },
+        {
+          "job": "publish",
+          "condition": "inputs.operation == 'publish' && vars.REGISTRY_PUBLISH_ENABLED == 'true' && github.ref_type == 'tag'",
+          "runs_on": "ubuntu-latest",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+              "condition": null
+            },
+            {
+              "name": "Require the approved tag and CI artifact",
+              "run": "test \"$GITHUB_REF_NAME\" = \"v${VERSION}\"\ntest -n \"$APPROVED_SHA256\"\ntest \"$VERIFIED_SHA256\" = \"$APPROVED_SHA256\"\nrustup toolchain install 1.97 --profile minimal --component rustfmt --component clippy\nrustup override set 1.97\ncargo package --locked --registry crates-io\ntest \"$(sha256sum target/package/*.crate | cut -d ' ' -f 1)\" = \"$APPROVED_SHA256\"\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Obtain a short-lived scoped crates.io token",
+              "run": null,
+              "uses": "rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18",
+              "condition": null
+            },
+            {
+              "name": "Publish the approved crate",
+              "run": "cargo publish --locked --registry crates-io",
+              "uses": null,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/verify-cargo.yml",
+      "jobs": [
+        {
+          "job": "verify",
+          "condition": null,
+          "runs_on": "ubuntu-latest",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+              "condition": null
+            },
+            {
+              "name": "Install the declared Rust toolchain",
+              "run": "rustup toolchain install 1.97 --profile minimal --component rustfmt --component clippy\nrustup override set 1.97\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": "Verify source and independent package",
+              "run": "cargo fmt --all -- --check\ncargo test --locked --all-features\ncargo clippy --locked --all-targets --all-features -- -D warnings\ncargo package --locked --registry crates-io\nsha256sum target/package/zixcel-github-0.1.1.crate\n",
+              "uses": null,
+              "condition": null
+            },
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+              "condition": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evidence_policy": "Declarations and source paths are not proof of an executed acceptance. Exact CI head and result are recorded separately. No live accounts or production acceptance is inferred."
+}

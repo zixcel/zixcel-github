@@ -66,3 +66,6 @@ authorization and deployment-owned credential configuration. OpenAI authorizatio
 egress belongs to `zixcel-openai-auth`, not this GitHub workspace.
 
 [OSS responsibility and source completion](docs/oss-source-contract.md) defines the supported package boundary and required acceptance. It does not declare unexecuted source, distribution or production checks complete.
+
+Dependency updates: [repository policy](docs/dependency-updates.md).
+Registry releases: [version tags and GitHub OIDC](docs/registry-release.md).

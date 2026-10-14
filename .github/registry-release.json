@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "repository": "zixcel/zixcel-github",
+  "defaultBranch": "main",
+  "requiredWorkflows": [
+    "cargo-package.yml",
+    "ci.yml",
+    "oss-policy.yml",
+    "verify-cargo.yml"
+  ],
+  "packages": [
+    {
+      "ecosystem": "cargo",
+      "manifest": "Cargo.toml",
+      "name": "zixcel-github",
+      "installDirectory": "."
+    },
+    {
+      "ecosystem": "cargo",
+      "manifest": "crates/zixcel-github-egress-contracts/Cargo.toml",
+      "name": "zixcel-github-egress-contracts",
+      "installDirectory": "."
+    }
+  ]
+}

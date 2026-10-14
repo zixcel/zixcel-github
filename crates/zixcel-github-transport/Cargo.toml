@@ -26,7 +26,7 @@ zeroize = "=1.8.2"
 zixcel-github = { version = "=0.1.1", path = "../.." }
 
 [dev-dependencies]
-base64 = "=0.22.1"
+base64 = "=0.23.1"
 tempfile = "=3.27.0"
 
 [lints.rust]

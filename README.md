@@ -69,3 +69,9 @@ egress belongs to `zixcel-openai-auth`, not this GitHub workspace.
 
 Dependency updates: [repository policy](docs/dependency-updates.md).
 Registry releases: [version tags and GitHub OIDC](docs/registry-release.md).
+
+## Native Zix provider
+
+[Reviewed Rust adapter](crates/github-cli/README.md) adds scoped read commands
+through the common `zix` protocol. Source/development tests and native distribution
+are separate; no real credentials or cloud operations are used by CI.

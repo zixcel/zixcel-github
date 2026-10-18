@@ -1,0 +1,13 @@
+{
+  "arguments": {
+    "login": "synthetic-user"
+  },
+  "url": "https://api.github.com/user",
+  "raw": {
+    "id": 1000000001,
+    "login": "synthetic-user",
+    "name": "Synthetic user",
+    "type": "User",
+    "unselected-private-field": "not selected"
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "zix-native-policy/v1",
+  "namespace": "github",
+  "package": "zixcel-github-cli",
+  "version": "0.1.0",
+  "credential_environment": "ZIX_GITHUB_ACCESS_TOKEN",
+  "origin": "https://api.github.com",
+  "base_path": "",
+  "routes_sha256": "5db6d6b1d5dba6a4fcb57ef32bab6ff11b11b862d7f373e93074bd2d5d52d23a",
+  "operations": [
+    {
+      "api": "users/get-authenticated",
+      "command": {
+        "id": "user.read",
+        "words": [
+          "user",
+          "get"
+        ],
+        "effect": "read",
+        "description": "Read github user get.",
+        "required_permissions": [
+          "Credential access to authenticated user"
+        ],
+        "arguments": [
+          {
+            "name": "login",
+            "required": true,
+            "maximum": 128
+          }
+        ]
+      },
+      "path_arguments": {},
+      "argument_rules": {
+        "login": "identifier"
+      },
+      "query": {},
+      "headers": {
+        "accept": "application/vnd.github+json",
+        "x-github-api-version": "2022-11-28"
+      },
+      "identity": [
+        {
+          "pointer": "/login",
+          "expected": "{login}"
+        }
+      ],
+      "projection": {
+        "pointer": "",
+        "collection": false,
+        "fields": {
+          "id": "/id",
+          "login": "/login",
+          "name": "/name",
+          "type": "/type"
+        },
+        "required": [
+          "id"
+        ],
+        "success_pointer": null
+      }
+    },
+    {
+      "api": "repos/get",
+      "command": {
+        "id": "repository.read",
+        "words": [
+          "repositories",
+          "get"
+        ],
+        "effect": "read",
+        "description": "Read github repositories get.",
+        "required_permissions": [
+          "Repository metadata read for selected repository"
+        ],
+        "arguments": [
+          {
+            "name": "owner",
+            "required": true,
+            "maximum": 128
+          },
+          {
+            "name": "repo",
+            "required": true,
+            "maximum": 128
+          }
+        ]
+      },
+      "path_arguments": {
+        "owner": "owner",
+        "repo": "repo"
+      },
+      "argument_rules": {
+        "owner": "identifier",
+        "repo": "identifier"
+      },
+      "query": {},
+      "headers": {
+        "accept": "application/vnd.github+json",
+        "x-github-api-version": "2022-11-28"
+      },
+      "identity": [
+        {
+          "pointer": "/full_name",
+          "expected": "{owner}/{repo}"
+        }
+      ],
+      "projection": {
+        "pointer": "",
+        "collection": false,
+        "fields": {
+          "id": "/id",
+          "name": "/name",
+          "full-name": "/full_name",
+          "private": "/private"
+        },
+        "required": [
+          "id"
+        ],
+        "success_pointer": null
+      }
+    }
+  ]
+}

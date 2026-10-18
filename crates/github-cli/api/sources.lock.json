@@ -1,0 +1,19 @@
+{
+  "schema": "zix-api-source-lock/v1",
+  "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/755ee33b4a81d51f6f07a902cce26cbec3b822f2/descriptions/api.github.com/api.github.com.json",
+  "upstream_sha256": "3177ad6a86ca04c57a9bef3fc24e28a339efb8eb040c6f950af3d3ed2fee7fa3",
+  "upstream_bytes": 13502446,
+  "git_commit": "755ee33b4a81d51f6f07a902cce26cbec3b822f2",
+  "archive_sha256": null,
+  "archive_member": null,
+  "input_format": "openapi",
+  "reference_sources": {},
+  "selected_api_ids": [
+    "repos/get",
+    "users/get-authenticated"
+  ],
+  "routes_sha256": "5db6d6b1d5dba6a4fcb57ef32bab6ff11b11b862d7f373e93074bd2d5d52d23a",
+  "compiler_repository": "https://github.com/zixcel/cli",
+  "compiler_revision": "c0d0c04eaa17b55491144a52d918810baf2f53a6",
+  "redistributed_content": "interface facts only; no upstream prose, examples or schema bodies"
+}

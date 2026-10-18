@@ -1,0 +1,15 @@
+{
+  "operation": "repository.read",
+  "arguments": {
+    "owner": "synthetic-owner",
+    "repo": "synthetic-repo"
+  },
+  "url": "https://api.github.com/repos/synthetic-owner/synthetic-repo",
+  "raw": {
+    "id": 1000000001,
+    "name": "synthetic-repo",
+    "full_name": "synthetic-owner/synthetic-repo",
+    "private": false,
+    "unselected-private-field": "not selected"
+  }
+}

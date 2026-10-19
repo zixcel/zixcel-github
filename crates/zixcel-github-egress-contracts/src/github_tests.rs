@@ -61,5 +61,11 @@ fn command() -> GitHubEgressCommandV1 {
 }
 
 fn digest(value: &str) -> String {
-    format!("sha256:{:x}", Sha256::digest(value.as_bytes()))
+    (Sha256::digest(value.as_bytes()))
+        .iter()
+        .fold(String::from("sha256:"), |mut encoded, byte| {
+            use std::fmt::Write as _;
+            write!(encoded, "{byte:02x}").expect("writing to String cannot fail");
+            encoded
+        })
 }

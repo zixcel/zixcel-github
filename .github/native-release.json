@@ -1,0 +1,6 @@
+{
+  "repository": "zixcel/zixcel-github",
+  "package": "zixcel-github-cli",
+  "tag_prefix": "native/github/v",
+  "workflow": "native-provider.yml"
+}

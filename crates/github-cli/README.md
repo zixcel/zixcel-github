@@ -1,6 +1,6 @@
 # Native github observations
 
-This source-only Rust adapter uses the shared `zix-provider/v1` host and Crowsi
+This Rust adapter uses the shared `zix-provider/v1` host and Crowsi
 HTTPS/process boundaries. API identifiers, paths and server facts were checked
 against the official source in `api/sources.lock.json`; `api/policy.json` separately
 pins the route bytes, credentials, argument rules, identity checks and projections.
@@ -12,6 +12,8 @@ binary/manifest hashes in Zix; the native runtime needs no Node installation.
 Provide `ZIX_GITHUB_ACCESS_TOKEN` only in the selected process environment;
 never put a bearer token in arguments, policy files, logs or Issue comments.
 No implicit login, API activation, permission grant or credential fallback occurs.
+The bounded HTTP transport sends its fixed package/version User-Agent, which
+GitHub requires. Policy data cannot override that identifier or authorization.
 
 Commands: `zix github user get`, `zix github repositories get`.
 Use `zix github --help` for required scope arguments after installation.
@@ -26,4 +28,7 @@ Native release/tag protection and distribution remain separate acceptance work.
 
 Owner CI also prepares a static musl candidate with dependency notices, source
 record and archive/contents hashes. CI artifacts are review candidates, not a
-GitHub Release; no tag or publishing permission is added by this workflow.
+GitHub Release. The separate `release-native.yml` workflow admits version tags
+`native/github/v*` from accepted main and publishes after the existing
+`native-public` review. Native CLI versions are independent of the root Rust
+library; a native HTTP fix does not require a new unrelated library version.

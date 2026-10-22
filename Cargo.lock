@@ -201,9 +201,9 @@ dependencies = [
 
 [[package]]
 name = "crowsi-credential-broker"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb7593a9e3f691c3b99f497bcdbd8883c5ab4dbcb277873b598a35cb001602bc"
+checksum = "942b266ace1f473204f95f3f9161b54c0ab4503925ada8fc54360b0fcdc94baf"
 dependencies = [
  "crowsi-control-contracts",
  "crowsi-windows-custody-provider",
@@ -253,13 +253,13 @@ dependencies = [
 
 [[package]]
 name = "crowsi-windows-custody-provider"
-version = "0.10.2"
+version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1edf3d5374c8251c76e6fa04f47b962e965e278d5d0c85f7832ac4d0eca43644"
+checksum = "c47f39e4b16e8c1fd419b67511cc469f2a7c93a6dab3c64e84988011e18b27f7"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "crowsi-windows-operation-contracts",
- "ed25519-dalek 2.2.0",
+ "ed25519-dalek 3.0.0",
  "getrandom 0.3.4",
  "hex",
  "ihat-identity-assertion-contracts",
@@ -1529,7 +1529,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.3.4",
+ "getrandom 0.4.3",
  "once_cell",
  "rustix",
  "windows-sys 0.61.2",
@@ -1537,22 +1537,22 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "2.0.18"
+version = "2.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4288b5bcbc7920c07a1149a35cf9590a2aa808e0bc1eafaade0b80947865fbc4"
+checksum = "09e52cb86a36cede5cb101bf8908837b3e4c6e5e59fe7fd85c23fb56200d189e"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.18"
+version = "2.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ebc4ee7f67670e9b64d05fa4253e753e016c6c95ff35b89b7941d6b856dec1d5"
+checksum = "fe5197923287db20a58125f0bc85c062f7f2c892de97b18c356f9efb14b28524"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.119",
+ "syn 3.0.7",
 ]
 
 [[package]]

@@ -14,7 +14,7 @@ name = "zixcel-github-transport"
 path = "src/main.rs"
 
 [dependencies]
-crowsi-credential-broker = { version = "=0.1.1" }
+crowsi-credential-broker = { version = "=0.1.2" }
 zixcel-github-egress-contracts = { version = "=0.10.0", path = "../zixcel-github-egress-contracts" }
 ed25519-dalek = "=3.0.0"
 getrandom = "=0.4.3"

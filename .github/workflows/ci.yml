@@ -9,6 +9,15 @@ concurrency:
   group: product-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  maintenance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify maintenance decisions without credentials or remote writes
+        run: PYTHONPATH=maintenance python3 -m unittest discover -s maintenance/tests -v
   test:
     runs-on: ubuntu-24.04
     timeout-minutes: 45

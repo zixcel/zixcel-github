@@ -77,3 +77,11 @@ through the common `zix` protocol. Source/development tests and native distribut
 are separate; no real credentials or cloud operations are used by CI.
 
 Native Zix operation discovery and diagnostic handling: [operation guidance](docs/operation-guidance.md).
+
+## Repository maintenance
+
+The [maintenance package](maintenance/README.md) provides explicit-owner fleet
+inventory, complete-scope checks, PR/diff admission and guarded operator changes.
+It reuses local gh authentication and preserves denied observations, existing
+protections and uncertain-write receipts. It is separate from the published
+Rust provider and does not introduce a central release or credential authority.

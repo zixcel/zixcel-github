@@ -69,6 +69,20 @@
         "implicit_bins": []
       },
       "declared_commands": {}
+    },
+    {
+      "manifest": "maintenance/pyproject.toml",
+      "package": "zixcel-github-maintenance",
+      "ecosystem": "python",
+      "description": "Explicit-scope GitHub repository maintenance with existing gh authentication",
+      "interfaces": {
+        "bin": {
+          "zix-github-maintenance": "zixcel_github_maintenance.__main__:main"
+        }
+      },
+      "declared_commands": {
+        "test": "PYTHONPATH=maintenance python3 -m unittest discover -s maintenance/tests -v"
+      }
     }
   ],
   "schema_definitions": [],
@@ -87,6 +101,9 @@
     "crates/zixcel-github-transport/tests/fixtures/github_fixture.rs",
     "crates/zixcel-github-transport/tests/fixtures/response.rs",
     "crates/zixcel-github-transport/tests/ledger.rs",
+    "maintenance/tests/test_admission.py",
+    "maintenance/tests/test_branches.py",
+    "maintenance/tests/test_operations.py",
     "scripts/check-public-package.py",
     "src/action_validation.rs",
     "src/artifacts.rs",
@@ -174,6 +191,25 @@
       "path": ".github/workflows/ci.yml",
       "jobs": [
         {
+          "job": "maintenance",
+          "condition": null,
+          "runs_on": "ubuntu-24.04",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+              "condition": null
+            },
+            {
+              "name": "Verify maintenance decisions without credentials or remote writes",
+              "run": "PYTHONPATH=maintenance python3 -m unittest discover -s maintenance/tests -v",
+              "uses": null,
+              "condition": null
+            }
+          ]
+        },
+        {
           "job": "test",
           "condition": null,
           "runs_on": "ubuntu-24.04",
@@ -181,7 +217,7 @@
             {
               "name": null,
               "run": null,
-              "uses": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+              "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
               "condition": null
             },
             {

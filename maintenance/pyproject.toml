@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zixcel-github-maintenance"
+version = "0.1.0"
+description = "Explicitly scoped repository inventory and reviewed maintenance with existing gh authentication"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+dependencies = []
+
+[project.scripts]
+zix-github-maintenance = "zixcel_github_maintenance.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["zixcel_github_maintenance*"]
+
+[project.urls]
+Repository = "https://github.com/zixcel/zixcel-github"

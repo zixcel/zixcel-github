@@ -1,0 +1,109 @@
+[
+  {
+    "operation": "user.read",
+    "selectors": {},
+    "intent": "read_expected_github_identity",
+    "keywords": [
+      "GITHUB",
+      "IDENTITY",
+      "READ"
+    ],
+    "requirements": [
+      {
+        "kind": "audience",
+        "value": "https://api.github.com",
+        "subject": "github_credential"
+      },
+      {
+        "kind": "provider_permission",
+        "value": "Credential access to authenticated user",
+        "subject": "github_credential"
+      },
+      {
+        "kind": "target_scope",
+        "value": "Expected authenticated login",
+        "subject": "operation"
+      },
+      {
+        "kind": "context",
+        "value": "A hidden or denied repository response does not prove absence; do not request broad classic scopes automatically",
+        "subject": "operation"
+      }
+    ],
+    "next_actions": [
+      {
+        "namespace": "credential",
+        "operation": "help",
+        "purpose": "inspect_secure_credential_usage",
+        "arguments": {},
+        "on": [
+          "context",
+          "authentication"
+        ]
+      }
+    ],
+    "documentation": [
+      "https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens"
+    ]
+  },
+  {
+    "operation": "repository.read",
+    "selectors": {},
+    "intent": "read_selected_repository_metadata",
+    "keywords": [
+      "GITHUB",
+      "REPOSITORY",
+      "READ"
+    ],
+    "requirements": [
+      {
+        "kind": "audience",
+        "value": "https://api.github.com",
+        "subject": "github_credential"
+      },
+      {
+        "kind": "provider_permission",
+        "value": "Repository metadata read for selected repository",
+        "subject": "github_credential"
+      },
+      {
+        "kind": "target_scope",
+        "value": "Exact owner and repository; selected fine-grained token resources and organization SSO approval where applicable",
+        "subject": "operation"
+      },
+      {
+        "kind": "context",
+        "value": "A hidden or denied repository response does not prove absence; do not request broad classic scopes automatically",
+        "subject": "operation"
+      }
+    ],
+    "next_actions": [
+      {
+        "namespace": "credential",
+        "operation": "help",
+        "purpose": "inspect_secure_credential_usage",
+        "arguments": {},
+        "on": [
+          "context",
+          "authentication"
+        ]
+      },
+      {
+        "namespace": "github",
+        "operation": "user.read",
+        "purpose": "inspect_expected_token_identity",
+        "arguments": {},
+        "on": [
+          "authentication",
+          "authorization"
+        ],
+        "requires_context": {
+          "expected_login": "known_and_authorized"
+        }
+      }
+    ],
+    "documentation": [
+      "https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens"
+    ]
+  }
+]

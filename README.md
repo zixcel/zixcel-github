@@ -75,3 +75,5 @@ Registry releases: [version tags and GitHub OIDC](docs/registry-release.md).
 [Reviewed Rust adapter](crates/github-cli/README.md) adds scoped read commands
 through the common `zix` protocol. Source/development tests and native distribution
 are separate; no real credentials or cloud operations are used by CI.
+
+Native Zix operation discovery and diagnostic handling: [operation guidance](docs/operation-guidance.md).

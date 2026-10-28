@@ -8,8 +8,8 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from zixcel_github_maintenance.local_ci import execute, observe, merge
-from zixcel_github_maintenance.__main__ import digest
+from zixcel_github_maintenance.local_ci import execute, observe, merge, prepare
+from zixcel_github_maintenance.__main__ import digest, command
 
 
 class LocalCiTests(unittest.TestCase):
@@ -65,6 +65,55 @@ class LocalCiTests(unittest.TestCase):
                         merge(args)
                     api.assert_not_called()
             self.assertFalse(args.output.exists())
+
+    def test_prepare_uses_live_main_as_first_parent_and_fresh_runtime(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = root / 'repo'
+            repo.mkdir()
+            def git(*args):
+                return command(['git', '-c', 'user.name=Test', '-c',
+                                'user.email=test@localhost', *args], cwd=repo).stdout.strip()
+            git('init', '--initial-branch=main')
+            git('remote', 'add', 'origin', 'https://github.com/owner/repo.git')
+            (repo / 'base').write_text('original')
+            git('add', '.')
+            git('commit', '-m', 'base')
+            old = git('rev-parse', 'HEAD')
+            git('switch', '-c', 'source')
+            (repo / 'source').write_text('PR')
+            git('add', '.')
+            git('commit', '-m', 'PR')
+            head = git('rev-parse', 'HEAD')
+            git('switch', 'main')
+            (repo / 'base').write_text('updated')
+            git('commit', '-am', 'new main')
+            base = git('rev-parse', 'HEAD')
+            plan = dict(schema='zix-local-ci-plan/v1', repository='owner/repo',
+                        number=1, checkout=str(repo), head=head, base=old,
+                        checks=[dict(name='smoke', argv=['true'], timeoutSeconds=1)],
+                        env=dict(RUNNER_TEMP=str(root / 'old'), GITHUB_ENV=str(root / 'old/env')))
+            path = root / 'plan.json'
+            path.write_text(json.dumps(plan))
+            output = root / 'new.json'
+            def api(path):
+                if '/pulls/' in path:
+                    return dict(state='observed', data=dict(state='open', head=dict(sha=head), base=dict(sha=old, ref='main')))
+                return dict(state='observed', data=dict(object=dict(sha=base)))
+            def local_command(argv, **kwargs):
+                if argv[:2] == ['git', 'fetch']:
+                    return subprocess.CompletedProcess(argv, 0, '', '')
+                return command(argv, **kwargs)
+            with patch('zixcel_github_maintenance.local_ci.api', side_effect=api), \
+                    patch('zixcel_github_maintenance.local_ci.command', side_effect=local_command):
+                prepare(SimpleNamespace(plan=path, output=output))
+            result = json.loads(output.read_text())
+            self.assertEqual(git('rev-parse', 'HEAD^1'), base)
+            self.assertEqual(git('rev-parse', 'HEAD^2'), head)
+            self.assertEqual((repo / 'base').read_text(), 'updated')
+            self.assertEqual((repo / 'source').read_text(), 'PR')
+            self.assertNotEqual(result['env']['RUNNER_TEMP'], plan['env']['RUNNER_TEMP'])
+            self.assertTrue(Path(result['env']['GITHUB_ENV']).exists())
 
 
 if __name__ == '__main__':

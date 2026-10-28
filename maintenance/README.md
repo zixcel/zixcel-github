@@ -82,6 +82,17 @@ It stops at the first failure; a failed receipt never claims later tests ran.
 An explicit `verifyMerged: true` plan permits verification of an already merged
 PR against current main. That evidence can never authorize another merge.
 
+After main advances, `prepare-local --plan <reviewed-plan.json> --output
+<fresh-plan.json>` refreshes an **idle, isolated** checkout and gives it a fresh
+runtime directory. Never use it while validation is running in that checkout.
+It requires a clean tracked tree and matching GitHub origin/head, fetches the
+public PR/main references, and uses Git's three-way tree merge without modifying
+files on conflicts. The local integration commit has current main as its first
+parent and the reviewed PR head as its second, matching PR CI semantics. It is
+not pushed. Optional `workflowSha256` per check detects selected workflow changes
+and requires renewed command review. Preparation does not discover CI coverage
+or authorize source changes. Existing user work and branches are not reset.
+
 `merge-local --evidence <receipt.json> --output <fresh-private-directory>
 --reviewed-local-equivalence` requires explicit operator review that the plan
 covers the complete applicable CI. It verifies passed evidence and log hashes,

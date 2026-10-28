@@ -10,8 +10,61 @@ from pathlib import Path
 import signal
 import subprocess
 import time
+import re
 
 from .__main__ import api, command, digest, now, owner_repository, write
+
+
+def prepare(args):
+    """Refresh a reviewed plan without trusting a PR's comparison base SHA."""
+    plan = json.loads(args.plan.read_text())
+    if plan['schema'] != 'zix-local-ci-plan/v1' or plan.get('verifyMerged'):
+        raise ValueError('Open-PR local CI plan required')
+    if args.output.exists():
+        raise ValueError('Fresh plan output required')
+    owner_repository(plan['repository'])
+    cwd = Path(plan['checkout']).resolve(strict=True)
+    if command(['git', 'status', '--porcelain', '--untracked-files=no'], cwd=cwd).stdout.strip():
+        raise ValueError('Preparation must not overwrite tracked changes')
+    pr = api(f"repos/{plan['repository']}/pulls/{plan['number']}")
+    base = api(f"repos/{plan['repository']}/git/ref/heads/main")
+    if (pr['state'] != 'observed' or base['state'] != 'observed'
+            or pr['data']['state'] != 'open' or pr['data']['base']['ref'] != 'main'
+            or pr['data']['head']['sha'] != plan['head']):
+        raise ValueError('Unavailable or changed PR head/main')
+    origin = command(['git', 'remote', 'get-url', 'origin'], cwd=cwd).stdout.strip()
+    allowed = [f"https://github.com/{plan['repository']}", f"git@github.com:{plan['repository']}"]
+    if origin.removesuffix('.git') not in allowed:
+        raise ValueError('Checkout origin differs from explicit repository')
+    command(['git', 'fetch', 'origin', 'main', f"refs/pull/{plan['number']}/head"], cwd=cwd, timeout=120)
+    plan['base'] = base['data']['object']['sha']
+    tree = command(['git', 'merge-tree', '--write-tree', plan['base'], plan['head']], cwd=cwd).stdout.splitlines()[0]
+    if not re.fullmatch('[0-9a-f]{40}', tree):
+        raise ValueError('No conflict-free integration tree')
+    for check in plan['checks']:
+        if check.get('workflowSha256'):
+            file = check['name'].split('/')[0]
+            source = command(['git', 'show', tree + ':.github/workflows/' + file], cwd=cwd).stdout
+            if hashlib.sha256(source.encode()).hexdigest() != check['workflowSha256']:
+                raise ValueError('Selected workflow changed; review commands again')
+    commit = command(['git', '-c', 'user.name=Local CI preparation', '-c',
+                      'user.email=local-ci@localhost', 'commit-tree', tree,
+                      '-p', plan['base'], '-p', plan['head'], '-m',
+                      'Local CI integration; not a published commit'], cwd=cwd).stdout.strip()
+    command(['git', 'switch', '--detach', commit], cwd=cwd)
+    plan['tree'] = tree
+    previous = plan.get('env', {}).get('RUNNER_TEMP')
+    if previous:
+        runtime = args.output.resolve().with_suffix('').with_name(args.output.stem + '-runtime')
+        runtime.mkdir(mode=0o700, parents=True, exist_ok=False)
+        plan = json.loads(json.dumps(plan).replace(previous, str(runtime)))
+        for name in ['GITHUB_ENV', 'GITHUB_OUTPUT', 'GITHUB_STEP_SUMMARY']:
+            if plan['env'].get(name):
+                Path(plan['env'][name]).touch(mode=0o600, exist_ok=False)
+    plan.setdefault('env', {})['GITHUB_SHA'] = commit
+    observe(plan)
+    write(args.output, plan)
+    print(plan['repository'], plan['number'], 'prepared', tree, flush=True)
 
 
 def observe(plan):

@@ -372,6 +372,9 @@ def main():
     local = sub.add_parser('local-ci', help='Execute an explicit local CI plan on an exact integration tree')
     local.add_argument('--plan', type=Path, required=True)
     local.add_argument('--output', type=Path, required=True)
+    preparation = sub.add_parser('prepare-local', help='Refresh an idle isolated integration checkout and reviewed plan')
+    preparation.add_argument('--plan', type=Path, required=True)
+    preparation.add_argument('--output', type=Path, required=True)
     local_merge = sub.add_parser('merge-local', help='Normal merge with reviewed complete local CI evidence')
     local_merge.add_argument('--evidence', type=Path, required=True)
     local_merge.add_argument('--output', type=Path, required=True)
@@ -394,6 +397,9 @@ def main():
     elif args.command == 'local-ci':
         from .local_ci import run
         run(args)
+    elif args.command == 'prepare-local':
+        from .local_ci import prepare
+        prepare(args)
     elif args.command == 'merge-local':
         from .local_ci import merge
         merge(args)

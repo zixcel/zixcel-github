@@ -75,7 +75,8 @@ Review applicable workflow triggers, job matrices, native prerequisites and
 existing execution holds. Provisioning, release and deployment are separate.
 The runner checks fresh GitHub head/base before and after execution, rejects
 tracked changes, retains private exit codes and hashed logs, limits file output
-to 64 MiB per child and terminates only its own process group on timeout.
+by polling each log against a 64 MiB budget and terminates only its own process
+group on timeout or budget exhaustion. Build artifact sizes are not restricted.
 It stops at the first failure; a failed receipt never claims later tests ran.
 
 `merge-local --evidence <receipt.json> --output <fresh-private-directory>

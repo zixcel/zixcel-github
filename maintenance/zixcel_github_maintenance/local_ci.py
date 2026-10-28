@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import signal
 import subprocess
-import resource
+import time
 
 from .__main__ import api, command, digest, now, owner_repository, write
 
@@ -31,13 +31,20 @@ def execute(argv, cwd, env, log, timeout):
         raise ValueError('An explicit argument vector is required')
     with log.open('xb') as output:
         os.chmod(log, 0o600)
-        def budget():
-            resource.setrlimit(resource.RLIMIT_FSIZE, (64 * 1024 * 1024, 64 * 1024 * 1024))
         process = subprocess.Popen(argv, cwd=cwd, env=env, stdout=output,
-                                   stderr=subprocess.STDOUT, start_new_session=True,
-                                   preexec_fn=budget)
+                                   stderr=subprocess.STDOUT, start_new_session=True)
         try:
-            return process.wait(timeout=timeout)
+            deadline = time.monotonic() + timeout
+            while True:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise subprocess.TimeoutExpired(argv, timeout)
+                if log.stat().st_size > 64 * 1024 * 1024:
+                    raise ValueError('Local check log exceeds 64 MiB budget')
+                try:
+                    return process.wait(timeout=min(0.25, remaining))
+                except subprocess.TimeoutExpired:
+                    continue
         except BaseException:
             # Only the process group created by this invocation is terminated.
             os.killpg(process.pid, signal.SIGTERM)

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zixcel-github-maintenance"
-version = "0.2.0"
+version = "0.2.1"
 description = "Explicitly scoped repository inventory and reviewed maintenance with existing gh authentication"
 requires-python = ">=3.11"
 license = "Apache-2.0"

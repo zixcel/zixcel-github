@@ -369,6 +369,14 @@ def main():
     branches.add_argument('--workspace', type=Path, required=True)
     branches.add_argument('--output', type=Path, required=True)
     branches.add_argument('--apply', action='store_true')
+    local = sub.add_parser('local-ci', help='Execute an explicit local CI plan on an exact integration tree')
+    local.add_argument('--plan', type=Path, required=True)
+    local.add_argument('--output', type=Path, required=True)
+    local_merge = sub.add_parser('merge-local', help='Normal merge with reviewed complete local CI evidence')
+    local_merge.add_argument('--evidence', type=Path, required=True)
+    local_merge.add_argument('--output', type=Path, required=True)
+    local_merge.add_argument('--reviewed-local-equivalence', action='store_true', required=True,
+                             help='Operator reviewed coverage and authorized waiving hosted CI constraints')
     args = parser.parse_args()
     if args.command == 'inventory':
         inventory(args)
@@ -383,6 +391,12 @@ def main():
     elif args.command == 'branches':
         from .branches import cleanup
         cleanup(args)
+    elif args.command == 'local-ci':
+        from .local_ci import run
+        run(args)
+    elif args.command == 'merge-local':
+        from .local_ci import merge
+        merge(args)
 
 
 if __name__ == '__main__':

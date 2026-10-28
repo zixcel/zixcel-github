@@ -63,3 +63,26 @@ The separate `zix-repository-observer` remains the bounded read-only Rust
 configuration observer. This operator utility does not change that contract.
 Official publication-stage notice reconciliation stays with each owner's
 existing `reconcile-npm-stages.yml`, including archive and Sigstore checks.
+
+For explicitly authorized local CI substitution on POSIX hosts, use `local-ci
+--plan <reviewed-plan.json> --output <fresh-private-directory>`. The
+`zix-local-ci-plan/v1` plan declares repository, PR number, exact `head`, `base`,
+integration `tree`, isolated `checkout`, optional `env`, and nonempty `checks`
+(`name`, explicit `argv`, `timeoutSeconds` from 1 through 3600). Prepare the
+integration checkout separately; both base and head must be ancestors. Commands
+are operator-reviewed CI equivalents, never commands discovered in PR text.
+Review applicable workflow triggers, job matrices, native prerequisites and
+existing execution holds. Provisioning, release and deployment are separate.
+The runner checks fresh GitHub head/base before and after execution, rejects
+tracked changes, retains private exit codes and hashed logs, limits file output
+to 64 MiB per child and terminates only its own process group on timeout.
+It stops at the first failure; a failed receipt never claims later tests ran.
+
+`merge-local --evidence <receipt.json> --output <fresh-private-directory>
+--reviewed-local-equivalence` requires explicit operator review that the plan
+covers the complete applicable CI. It verifies passed evidence and log hashes,
+rechecks head/base, rejects drafts, and uses GitHub's normal squash merge with
+an exact-head guard and readback. It does not invent successful GitHub checks,
+weaken branch protection, bypass actual local failures, or grant product
+acceptance. If GitHub still enforces hosted checks, it stops with a receipt;
+any separately authorized rule adjustment must be narrowly reviewed and restored.

@@ -15,13 +15,26 @@ from zixcel_github_maintenance.__main__ import digest
 class LocalCiTests(unittest.TestCase):
     def test_head_and_base_must_both_match(self):
         plan = dict(repository='owner/repo', number=1, head='a', base='b')
-        for head, base, state in [('x', 'b', 'open'), ('a', 'x', 'open'),
-                                  ('a', 'b', 'closed')]:
+        for head, base, state in [('x', 'b', 'open'), ('a', 'b', 'closed')]:
             with patch('zixcel_github_maintenance.local_ci.api', return_value={
-                'state': 'observed', 'data': dict(state=state, head=dict(sha=head), base=dict(sha=base))
+                'state': 'observed', 'data': dict(state=state, head=dict(sha=head), base=dict(sha=base, ref='main'))
             }):
                 with self.assertRaises(ValueError):
                     observe(plan)
+
+    def test_current_main_reference_overrides_stale_pr_comparison_base(self):
+        plan = dict(repository='owner/repo', number=1, head='a', base='current')
+        pr = dict(state='open', head=dict(sha='a'), base=dict(sha='old', ref='main'))
+        for current in ['current', 'moved']:
+            with patch('zixcel_github_maintenance.local_ci.api', side_effect=[
+                dict(state='observed', data=pr),
+                dict(state='observed', data=dict(object=dict(sha=current)))
+            ]):
+                if current == 'current':
+                    self.assertEqual(observe(plan), pr)
+                else:
+                    with self.assertRaises(ValueError):
+                        observe(plan)
 
     def test_failure_is_retained_and_shell_text_is_literal(self):
         with tempfile.TemporaryDirectory() as directory:

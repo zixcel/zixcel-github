@@ -73,11 +73,14 @@ integration checkout separately; both base and head must be ancestors. Commands
 are operator-reviewed CI equivalents, never commands discovered in PR text.
 Review applicable workflow triggers, job matrices, native prerequisites and
 existing execution holds. Provisioning, release and deployment are separate.
-The runner checks fresh GitHub head/base before and after execution, rejects
+The runner checks fresh GitHub PR head and the actual `refs/heads/main` before
+and after execution (the PR comparison snapshot's `base.sha` is insufficient), rejects
 tracked changes, retains private exit codes and hashed logs, limits file output
 by polling each log against a 64 MiB budget and terminates only its own process
 group on timeout or budget exhaustion. Build artifact sizes are not restricted.
 It stops at the first failure; a failed receipt never claims later tests ran.
+An explicit `verifyMerged: true` plan permits verification of an already merged
+PR against current main. That evidence can never authorize another merge.
 
 `merge-local --evidence <receipt.json> --output <fresh-private-directory>
 --reviewed-local-equivalence` requires explicit operator review that the plan

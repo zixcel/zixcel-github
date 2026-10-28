@@ -20,9 +20,14 @@ def observe(plan):
     if result['state'] != 'observed':
         raise ValueError('PR observation unavailable')
     pr = result['data']
-    if (pr['state'] != 'open' or pr['head']['sha'] != plan['head']
-            or pr['base']['sha'] != plan['base']):
-        raise ValueError('PR head/base drift or closed PR')
+    state_matches = (pr['state'] == 'closed' and pr.get('merged')) if plan.get('verifyMerged') else pr['state'] == 'open'
+    if not state_matches or pr['head']['sha'] != plan['head'] or pr['base']['ref'] != 'main':
+        raise ValueError('PR head/branch drift or unexpected PR state')
+    # A PR's base.sha can describe its older comparison snapshot. Only the
+    # actual branch reference proves which main integration is being tested.
+    base = api(f"repos/{plan['repository']}/git/ref/heads/main")
+    if base['state'] != 'observed' or base['data']['object']['sha'] != plan['base']:
+        raise ValueError('Current main drift or unavailable main reference')
     return pr
 
 
@@ -107,6 +112,8 @@ def merge(args):
     if record.get('schema') != 'zix-local-ci-evidence/v1' or record.get('state') != 'passed':
         raise ValueError('Passed local CI evidence required')
     plan = record['plan']
+    if plan.get('verifyMerged'):
+        raise ValueError('Post-merge verification evidence cannot authorize another merge')
     if record['planSha256'] != digest(plan) or len(record['checks']) != len(plan['checks']):
         raise ValueError('Changed or incomplete local evidence')
     for index, check in enumerate(record['checks']):
